@@ -1,0 +1,109 @@
+#include <iostream>
+#include <iomanip>
+#include <string>
+#include <fstream>
+using namespace std;
+
+/* Carly Herrett */
+
+int main()
+{
+	string customerName;
+	int numberOfTexts = 0;
+	const double TELEPHONE_RATE = 39.50;
+	double textCharge = 0.00;
+	double customerBill;
+	double totalBill = 0.00;
+	int noCustomers = 0;
+
+	ofstream fout("phoneBill.dat");
+	fout << fixed << setprecision(2);
+
+	if (!fout.is_open())
+	{
+		system("pause");
+		cout << "Error opening phoneBill.dat file - Contact Systems" << endl;
+		exit(444);
+	}
+
+	fout << left << setw(20) << "Customer"
+		<< right << setw(10) << "# Text"
+		<< setw(10) << "Text"
+		<< setw(10) << "Customer" << endl;
+
+	fout << left << setw(20) << "Name"
+		<< right << setw(10) << "Msgs"
+		<< setw(10) << "Charge"
+		<< setw(10) << "Bill"
+		<< endl << endl;
+
+	cout << "Enter customer's name (or ctrl Z to end) ";
+	getline(cin, customerName);
+
+	while (!cin.eof())
+	{
+		cout << "Enter number of messages: ";
+		cin >> numberOfTexts;
+
+		while (numberOfTexts < 0 || numberOfTexts > 500 || cin.fail())
+		{
+			cin.clear();
+			cin.ignore(80, '\n');
+			cout << endl << "Please use a valid number. Re-enter number of messages: ";
+			cin >> numberOfTexts;
+		}
+
+		if (numberOfTexts >= 0 && numberOfTexts <= 10)
+			textCharge = numberOfTexts * 0.00;
+
+		if (numberOfTexts >= 10 && numberOfTexts <= 100)
+			textCharge = numberOfTexts * 0.25;
+
+		else if (numberOfTexts > 100 && numberOfTexts <= 500)
+			textCharge = numberOfTexts * 0.50;
+
+		customerBill = TELEPHONE_RATE + textCharge;
+		noCustomers++;
+		totalBill += customerBill;
+
+
+		fout << left << setw(20) << customerName
+			<< right << setw(10) << numberOfTexts
+			<< setw(10) << textCharge
+			<< setw(10) << customerBill
+			<< endl;
+
+		cout << "Enter customer's name (or ctrl Z to end) ";
+		cin.ignore(80, '\n');
+		getline(cin, customerName);
+	}
+	cout << endl;
+
+	if (noCustomers > 0)
+	{
+		fout << endl << "Total Bills" << right << setw(39) << totalBill << endl;
+		fout << "Average Bill" << right << setw(38) << totalBill / noCustomers << endl;
+	}
+
+	system("type phoneBill.dat");
+	system("pause");
+}
+
+/*Enter customer's name (or ctrl Z to end) T. Kozel
+Enter number of messages: 85
+Enter customer's name (or ctrl Z to end) K. Porter
+Enter number of messages: 3
+Enter customer's name (or ctrl Z to end) T. Smith
+Enter number of messages: 320
+Enter customer's name (or ctrl Z to end) ^Z
+
+Customer                # Text      Text  Customer
+Name                      Msgs    Charge      Bill
+
+T. Kozel                    85     21.25     60.75
+K. Porter                    3      0.00     39.50
+T. Smith                   320    160.00    199.50
+
+Total Bills                                 299.75
+Average Bill                                 99.92
+Press any key to continue . . .*/
